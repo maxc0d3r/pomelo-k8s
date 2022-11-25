@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pomelo-game
+  labels:
+    app: pomelo-game
+  namespace: pomelo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pomelo-game
+  template:
+    metadata:
+      labels:
+        app: pomelo-game
+    spec:
+      containers:
+      - name: pomelo-game
+        image: maxc0d3r/pomelo-k8s:v2
+        imagePullPolicy: Never
+        env:
+          - name: REDIS_HOST
+            value: redis.default
+          - name: REDIS_PORT
+            value: "6379"
+          - name: SERVER_TYPE
+            value: "game"
+          - name: FRONTEND
+            value: "false"

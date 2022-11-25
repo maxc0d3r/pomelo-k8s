@@ -1,0 +1,16 @@
+{
+  "appenders": [
+    {
+      "type": "console"
+    }
+  ],
+  "levels": {
+    "pomelo": "DEBUG",
+    "rpc-log" : "ERROR",
+    "forward-log": "ERROR"
+  },
+
+  "replaceConsole": true,
+
+  "lineDebug": false
+}

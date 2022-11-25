@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pomelo-gate
+  labels:
+    app: pomelo-gate
+  namespace: pomelo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pomelo-gate
+  template:
+    metadata:
+      labels:
+        app: pomelo-gate
+    spec:
+      containers:
+        - name: pomelo-gate
+          securityContext: {}
+          image: maxc0d3r/pomelo-k8s:v2
+          imagePullPolicy: Never
+          env:
+            - name: REDIS_HOST
+              value: redis.default
+            - name: REDIS_PORT
+              value: "6379"
+            - name: SERVICE_DOMAIN
+              value: maxc0d3r.test
+            - name: SERVER_TYPE
+              value: gate
+            - name: CLIENT_PORT
+              value: "3014"
+          ports:
+          - containerPort: 3014
+            name: gate
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: pomelo-gate
+  labels:
+    app: pomelo-gate
+  namespace: pomelo
+spec:
+  ports:
+  - port: 3014
+    targetPort: 3014
+    name: gate
+  selector:
+    app: pomelo-gate
+  type: LoadBalancer

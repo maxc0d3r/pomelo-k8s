@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  labels:
+    app: nginx
+  namespace: pomelo
+spec:
+  ports:
+  - port: 3010
+    targetPort: 3010
+    name: connector
+  selector:
+    app: nginx
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  namespace: pomelo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      name: nginx
+      labels:
+        app: nginx
+    spec:
+      containers:
+        - name: nginx
+          image: maxc0d3r/pomelo-nginx:v2
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 3010
+          env:
+            - name: LISTEN_PORT
+              value: "3010"
+            - name: SERVICE_DOMAIN
+              value: "maxc0d3r.test"
+            - name: K8S_SERVICE
+              value: "pomelo-connector.pomelo.svc.cluster.local"
+            - name: FORWARD_PORT
+              value: "3010"
+            - name: K8S_DNS_SERVER
+              value: "10.0.0.10"
